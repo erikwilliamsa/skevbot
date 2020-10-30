@@ -1,0 +1,15 @@
+{
+  "total": 59,
+  "data": [
+    {
+      "from_id": "555267844",
+      "from_name": "possiblydevan",
+      "to_id": "168008802",
+      "to_name": "SWAYEnd",
+      "followed_at": "2020-10-28T23:24:32Z"
+    }
+  ],
+  "pagination": {
+    "cursor": "eyJiIjpudWxsLCJhIjp7IkN1cnNvciI6ImV5SjBjQ0k2SW5WelpYSTZOVGs1TmpJeU5qWXlPbVp2Ykd4dmQzTWlMQ0owY3lJNkluVnpaWEk2TVRZNE1EQTRPREF5SWl3aWFYQWlPaUoxYzJWeU9qRTJPREF3T0Rnd01qcG1iMnhzYjNkbFpGOWllU0lzSW1seklqb2lNVFl3TXpVNE5EazVNVE0wT1RBek1EazNPQ0o5In19"
+  }
+}
