@@ -28,7 +28,7 @@ func (h *Handlers) OnJoin(channel string) func(twitchchat.UserJoinMessage) {
 		cu := h.repo.GetUser(channel, m.User)
 
 		isFollowing, err := h.userfollowers.IsFollowing(cu.Name, channel)
-
+		cu.IsFollower = isFollowing
 		if err != nil {
 			p("Unable to look up followers for ", cu.Name, err)
 		}

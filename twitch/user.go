@@ -47,8 +47,9 @@ func (uf userfollowers) IsFollowing(from, to string) (bool, error) {
 	}
 
 	var f Followers
+	fmt.Println(string(b))
 	err = json.Unmarshal(b, &f)
-
+	fmt.Println(f)
 	if err != nil {
 		log.Println(err)
 

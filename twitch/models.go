@@ -1,7 +1,7 @@
 package twitch
 
 type Followers struct {
-	Total      int         `json:"cursor"`
+	Total      int         `json:"total"`
 	Followers  []Followers `json:"data"`
 	Pagination `json:"pagination"`
 }
