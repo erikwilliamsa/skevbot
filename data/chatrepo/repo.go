@@ -77,7 +77,6 @@ func (mup userrepo) GetUser(channel, name string) chat.ChatUser {
 		data.userdata[channel] = users{}
 	}
 	cu, ok := data.userdata[channel][name]
-	fmt.Println(cu.Name)
 
 	if !ok {
 		cu.Name = name
