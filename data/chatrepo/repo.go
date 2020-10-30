@@ -38,6 +38,7 @@ func setup() {
 			datafile: "users.json",
 			userdata: make(map[string]users),
 		}
+
 	}
 	_, err = os.Stat(p)
 
@@ -69,13 +70,14 @@ type userrepo struct {
 	mutex *sync.Mutex
 }
 
-func (mup userrepo) GetUser(name, channel string) chat.ChatUser {
+func (mup userrepo) GetUser(channel, name string) chat.ChatUser {
 	_, ok := data.userdata[channel]
 
 	if !ok {
 		data.userdata[channel] = users{}
 	}
 	cu, ok := data.userdata[channel][name]
+	fmt.Println(cu.Name)
 
 	if !ok {
 		cu.Name = name
