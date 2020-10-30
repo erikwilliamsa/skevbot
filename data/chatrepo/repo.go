@@ -90,9 +90,7 @@ func (mup userrepo) SaveUser(channel string, cu chat.ChatUser) {
 	mup.mutex.Lock()
 	defer mup.mutex.Unlock()
 	cu.Returning = true
-	if _, ok := data.userdata[channel]; !ok {
-		fmt.Println(":(")
-	}
+
 	data.userdata[channel][cu.Name] = cu
 	data.Save()
 
