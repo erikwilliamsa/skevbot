@@ -127,7 +127,7 @@ func (mup userrepo) GetUser(name string) ChatUser {
 func (mup userrepo) SaveUser(cu ChatUser) {
 	mup.mutex.Lock()
 	defer mup.mutex.Unlock()
-
+	cu.Returning = true
 	mup.users[cu.Name] = cu
 	ob, _ := json.Marshal(mup.users)
 	ioutil.WriteFile(mup.savepath, ob, 0755)
