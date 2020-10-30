@@ -3,6 +3,11 @@
 
 ## Environment Variables
 
+The following are required to be set.  See below for descriptions
+
+- CLIENT_ID
+- CLIENT_SECRET
+- CHANNEL
 
 ###
 
@@ -22,7 +27,7 @@ Get tokens from [The dev console](https://dev.twitch.tv/console)
 ### Chat Environment Variables
 
 
-- CHANNEL -  This is the channel you'll connect to in chat to monitor.
+- CHANNEL -  This is the channel you'll connect to in chat to monitor.  This is a required variable.
 
 The following is only needed if you want to connect to your chat as a non anonymous user.  
 

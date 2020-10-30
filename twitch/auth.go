@@ -2,7 +2,9 @@ package twitch
 
 import (
 	"context"
-	"log"
+	"fmt"
+	"math"
+	"time"
 
 	"golang.org/x/oauth2/clientcredentials"
 	"golang.org/x/oauth2/twitch"
@@ -10,6 +12,8 @@ import (
 
 type tokengenerator struct {
 	oauth2Config *clientcredentials.Config
+	RetryCount   int
+	retries      int
 }
 
 //ClientCredAuth used for creating client credentials grant type tokens
@@ -21,13 +25,22 @@ func ClientCredAuth(cid, cs string) TokenGenerator {
 			ClientSecret: cs,
 			TokenURL:     twitch.Endpoint.TokenURL,
 		},
+		RetryCount: 3,
 	}
 }
 
 func (tg *tokengenerator) Token() (string, error) {
 	token, err := tg.oauth2Config.Token(context.Background())
 	if err != nil {
-		log.Fatal(err)
+
+		if tg.retries == tg.RetryCount {
+			return "", err
+		}
+
+		fmt.Println("Retrying bearer token retrieval")
+		time.Sleep(backoff(time.Second, float64(tg.retries)))
+		tg.retries++
+		return tg.Token()
 	}
 	return token.AccessToken, err
 }
@@ -35,4 +48,10 @@ func (tg *tokengenerator) Token() (string, error) {
 //TokenGenerator generates the appropriate OAuth2 Token
 type TokenGenerator interface {
 	Token() (string, error)
+}
+
+func backoff(t time.Duration, count float64) time.Duration {
+	n := float64(t)
+	n = n * math.Pow(2, count-1)
+	return time.Duration(n)
 }

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/erikwilliamsa/skev-bot/chat"
+	"github.com/erikwilliamsa/skev-bot/data/chatrepo"
 	"github.com/erikwilliamsa/skev-bot/twitch"
 )
 
@@ -20,7 +21,7 @@ func main() {
 	f := twitch.NewUserFollowers(cc, ca, &http.Client{})
 	user := c
 
-	repo := chat.NewMemUserRepositry()
+	repo := chatrepo.NewMemUserRepositry()
 	handlers := chat.UserJoinHandler(f, repo)
 	tcc := chat.NewtwitchchatitchChatClient("", "")
 	engine := chat.EventEngine{Client: tcc, Handlers: handlers}

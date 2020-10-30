@@ -1,11 +1,7 @@
 package chat
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"os"
-	"sync"
 
 	"github.com/erikwilliamsa/skev-bot/twitch"
 	twitchchat "github.com/gempir/go-twitch-irc/v2"
@@ -29,7 +25,7 @@ type Handlers struct {
 func (h *Handlers) OnJoin(channel string) func(twitchchat.UserJoinMessage) {
 	return func(m twitchchat.UserJoinMessage) {
 
-		cu := h.repo.GetUser(m.User)
+		cu := h.repo.GetUser(channel, m.User)
 
 		isFollowing, err := h.userfollowers.IsFollowing(cu.Name, channel)
 
@@ -44,7 +40,7 @@ func (h *Handlers) OnJoin(channel string) func(twitchchat.UserJoinMessage) {
 		fmt.Printf(output, name, isfollower, returning, suspect)
 
 		if !cu.Returning {
-			h.repo.SaveUser(cu)
+			h.repo.SaveUser(channel, cu)
 		}
 
 	}
@@ -73,62 +69,4 @@ type ChatUser struct {
 	IsFollower bool
 	Suspect    bool
 	Returning  bool
-}
-
-type UserRepository interface {
-	GetUser(string) ChatUser
-	SaveUser(ChatUser)
-}
-
-type users map[string]ChatUser
-
-const fd = "/.skevbot/"
-
-func NewMemUserRepositry() UserRepository {
-	hd, _ := os.UserHomeDir()
-	_, err := os.Stat(hd + fd)
-	mutex := &sync.Mutex{}
-	if err != nil {
-		os.Mkdir(hd+fd, 0755)
-		return userrepo{users{}, hd + fd + "users.json", mutex}
-	}
-
-	u, err := ioutil.ReadFile(hd + fd + "users.json")
-
-	if err != nil {
-		return userrepo{users{}, hd + fd + "users.json", mutex}
-	}
-
-	usrs := users{}
-	json.Unmarshal(u, usrs)
-
-	return userrepo{users: usrs, savepath: hd + fd + "users.json", mutex: mutex}
-
-}
-
-type userrepo struct {
-	users    users
-	savepath string
-	mutex    *sync.Mutex
-}
-
-func (mup userrepo) GetUser(name string) ChatUser {
-
-	cu, ok := mup.users[name]
-
-	if !ok {
-		cu.Name = name
-		return cu
-	}
-
-	return cu
-}
-
-func (mup userrepo) SaveUser(cu ChatUser) {
-	mup.mutex.Lock()
-	defer mup.mutex.Unlock()
-	cu.Returning = true
-	mup.users[cu.Name] = cu
-	ob, _ := json.Marshal(mup.users)
-	ioutil.WriteFile(mup.savepath, ob, 0755)
 }
