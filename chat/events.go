@@ -24,7 +24,6 @@ type Handlers struct {
 
 func (h *Handlers) OnJoin(channel string) func(twitchchat.UserJoinMessage) {
 	return func(m twitchchat.UserJoinMessage) {
-
 		cu := h.repo.GetUser(channel, m.User)
 
 		isFollowing, err := h.userfollowers.IsFollowing(cu.Name, channel)

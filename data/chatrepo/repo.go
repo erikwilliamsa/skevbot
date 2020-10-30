@@ -2,6 +2,7 @@ package chatrepo
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -19,7 +20,7 @@ func NewMemUserRepositry() chat.UserRepository {
 
 }
 
-var data *repodata
+var data repodata
 
 func setup() {
 
@@ -30,11 +31,12 @@ func setup() {
 	}
 
 	p := path.Join(hd, fd)
-	if data == nil {
-		data = &repodata{
+	if data.userdata == nil {
+		fmt.Println("Initilizing data")
+		data = repodata{
 			path:     p,
 			datafile: "users.json",
-			userdata: map[string]users{},
+			userdata: make(map[string]users),
 		}
 	}
 	_, err = os.Stat(p)
@@ -54,10 +56,10 @@ func setup() {
 			panic("Cannot read data file: " + err.Error())
 		}
 
-		err = json.Unmarshal(b, data.userdata)
+		err = json.Unmarshal(b, &data.userdata)
 
 		if err != nil {
-			panic("Cannot parse data: " + err.Error())
+			log.Fatal("Cannot parse data: ", err.Error())
 		}
 	}
 
@@ -68,9 +70,6 @@ type userrepo struct {
 }
 
 func (mup userrepo) GetUser(name, channel string) chat.ChatUser {
-	mup.mutex.Lock()
-	defer mup.mutex.Unlock()
-
 	_, ok := data.userdata[channel]
 
 	if !ok {
@@ -80,7 +79,7 @@ func (mup userrepo) GetUser(name, channel string) chat.ChatUser {
 
 	if !ok {
 		cu.Name = name
-		defer mup.SaveUser(channel, cu)
+		mup.SaveUser(channel, cu)
 		return cu
 	}
 
@@ -91,6 +90,9 @@ func (mup userrepo) SaveUser(channel string, cu chat.ChatUser) {
 	mup.mutex.Lock()
 	defer mup.mutex.Unlock()
 	cu.Returning = true
+	if _, ok := data.userdata[channel]; !ok {
+		fmt.Println(":(")
+	}
 	data.userdata[channel][cu.Name] = cu
 	data.Save()
 
